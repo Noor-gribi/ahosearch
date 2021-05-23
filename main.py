@@ -221,3 +221,63 @@ def get_keywords_found(line):
 
 init_trie(['GTA','AGT','AAC'])
 print(get_keywords_found("CAGTAACCGTA"))
+
+# ____________________________ KMP  ______________________________________
+def best_bord2(M):
+    sz = len(M)
+    bord = []
+    # FILLING THE LIST WITH NONE ELEMENTS TO RESIZE IT WITH PATTERN LENGTH
+    for x in range(sz + 1):
+        bord.append(None)
+    # INITIALIZATION
+    bord[0] = -1
+    i = - 1
+    j = 0
+    for j in range(0, sz):
+        while i > 0 and M[i] != M[j]:
+            i = bord[i]
+        i += 1
+        try:
+            if (i == (sz - 1)) or (M[j + 1] != M[i]):
+                bord[j + 1] = i
+            else:
+                bord[j + 1] = bord[i]
+        except IndexError:
+            if (i == (sz - 1)) or ('' != M[i]):
+                bord[j + 1] = i
+            else:
+                bord[j + 1] = bord[i]
+    return bord
+
+
+def KMP2(T, M):
+    n = len(T)
+    m = len(M)
+    i = 0
+    j = 0
+    k = 0
+    # CALLING FUNCTION
+    bord = best_bord2(M)
+    result = []
+    while i < n - m + 1:
+        while (j < m) and (T[i + j] == M[j]):
+            k = k + 1
+            j = j + 1
+        if j == m:
+            result.append(i)
+        i = i + j - bord[j]
+        if bord[j] > 0:
+            j = bord[j]
+            k = k + 1
+        else:
+            j = 0
+    if not result:
+        return -1
+    else:
+        return result, k
+def kmpmotifs(t,keywords):
+    for key in keywords:
+        print("(l'indicde de la sous chaine,nombre de comparaisons)", KMP2(t, key))
+
+print(kmpmotifs('CAGTAACCGTA',(['GTA','AGT','AAC'])))
+

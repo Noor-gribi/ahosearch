@@ -1,3 +1,6 @@
+import timeit
+import os
+import time
 # ____________________________Prefixes ______________________________________
 
 # function to calculate prefixes of a given array of strings
@@ -21,8 +24,7 @@ def pref(m):
     return output
 
 
-m = ['attac', 'ac', 'tacg', 'atatc']
-print(pref(m))
+#print(pref(m))
 
 
 # ____________________________TRIE ______________________________________
@@ -69,8 +71,8 @@ def in_trie(trie, word):
     return True
 
 
-trie = make_trie('at', 'tatt', 'tt')
-print(trie)
+#trie = make_trie('at', 'tatt', 'tt')
+#print(trie)
 
 # ____________________________AHO CORASICK ______________________________________
 
@@ -199,6 +201,7 @@ def set_fail_transitions():
 # suivant de la ligne.
 def get_keywords_found(line):
     """ returns true if line contains any keywords in trie """
+
     current_state = 0
     keywords_found = []
     # Étant donné une entrée, ligne, nous parcourons chaque caractère de la ligne
@@ -218,8 +221,8 @@ def get_keywords_found(line):
     return keywords_found
 
 
-init_trie(['GTA','AGT','AAC'])
-print(get_keywords_found("CAGTAACCGTA"))
+#init_trie(['GTA','AGT','AAC'])
+#print(get_keywords_found("CAGTAACCGTA"))
 
 # ____________________________ KMP  ______________________________________
 def best_bord2(M):
@@ -273,10 +276,100 @@ def KMP2(T, M):
     if not result:
         return -1
     else:
-        return result, k
-def kmpmotifs(t,keywords):
+        return result
+def multiple_patterns(t,keywords):
+    i = 0
     for key in keywords:
-        print("(l'indicde de la sous chaine,nombre de comparaisons)", KMP2(t, key))
+        print("l'indice de la sous chaine ",keywords[i]," est : ", KMP2(t, key))
+        i += 1
 
-print(kmpmotifs('CAGTAACCGTA',(['GTA','AGT','AAC'])))
+#print(multiple_patterns('CAGTAACCGTA',(['GTA','AGT','AAC'])))
 
+
+#_________________________________________MENU____________________________________
+if __name__ == '__main__':
+    repeat = True
+
+    while repeat:
+        print("---------------- Menu ----------------")
+        print("---------------- LES FONCTIONS  -------------")
+        print("1) -> Afficher les prefixes d'un ensemble des mots")
+        print("2) -> Afficher l'automate d'un ensemble des mots")
+        print("3) -> Algorithme Aho-Corasick")
+        print("4) -> Algorithme KMP | Multiple Patterns")
+
+        choice = int(input("Your choice : "))
+
+        if choice == 1:
+            keywords = ['attac', 'ac', 'tacg', 'atatc']
+            pos = pref(keywords)
+            if pos == -1:
+                print("Nothing was found ")
+            else:
+                print("The prefixes of \'",keywords, "\' are ", pos)
+
+        if choice ==2:
+
+            pos = make_trie('attac', 'ac', 'tacg', 'atatc')
+            if pos == -1:
+                print("Nothing was found ")
+            else:
+                print("The automaton of the set is : ", pos)
+
+        if choice == 3:
+            # filenames are from test0 to test 8 , you just need to change the filename to change the testing input.
+
+            # patterns entered here in var
+
+            results = []
+
+            init_trie(['GTA', 'AGT', 'AAC'])
+            for x in range(0, 10000):
+                timing1 = timeit.default_timer()
+                filename = open('test', 'r').read()
+                pos = get_keywords_found(filename)
+                timing2 = timeit.default_timer()
+                results.append(timing2 - timing1)
+
+            if pos == -1:
+                print("The patterns weren't found ")
+            else:
+
+                print("- Number of caracters of the file : ", '\x1b[6;30;42m' , len(filename) , '\x1b[0m')
+                print("The patterns were found at : ", pos)
+
+            print('Function runtime is : ' ,'\x1b[0;30;43m' , sum(results) / len(results)  , '\x1b[0m')
+        if choice == 4:
+            # filenames are from test0 to test 8 , you just need to change the filename to change the testing input.
+
+            # patterns entered here in var
+
+            results = []
+            borderss = []
+            totalist = []
+            patterns = ['GTA', 'AGT', 'AAC']
+            filename = open('test', 'r').read()
+            for x in range(0, 10000):
+                timing1 = timeit.default_timer()
+                bords = best_bord2(patterns)
+                timing2 = timeit.default_timer()
+                KMP2(filename, patterns)
+                timing3 = timeit.default_timer()
+                for_borders = borderss.append(timing2 - timing1)
+                for_algorithm = results.append(timing3 - timing2)
+                total = totalist.append(timing3 - timing1)
+
+
+            print(multiple_patterns(filename,patterns))
+            print("- Number of caracters of the file : ", '\x1b[6;30;42m', len(filename), '\x1b[0m')
+
+            print("KMP Function runtime is :  ")
+            print(" > borders :  ",'\x1b[0;30;43m' , (sum(borderss) / len(borderss)), '\x1b[0m')
+            print(" > Alogorithm : ", '\x1b[0;30;43m' , sum(results) / len(results)  , '\x1b[0m')
+            print(" > Total : ",'\x1b[0;30;43m' , (sum(totalist) / len(totalist)), '\x1b[0m')
+
+        continu = input('Do you want to continue ? [o/n]')
+        if continu == 'o':
+            repeat = True
+        elif continu == 'n':
+            repeat = False

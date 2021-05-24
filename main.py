@@ -199,7 +199,6 @@ def set_fail_transitions():
 # suivant de la ligne.
 def get_keywords_found(line):
     """ returns true if line contains any keywords in trie """
-    line = line.lower()
     current_state = 0
     keywords_found = []
     # Étant donné une entrée, ligne, nous parcourons chaque caractère de la ligne
